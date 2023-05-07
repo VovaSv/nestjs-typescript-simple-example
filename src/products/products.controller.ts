@@ -7,6 +7,7 @@ import {
   Param,
   Query,
   Body,
+  NotFoundException,
 } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -23,7 +24,11 @@ export class ProductsController {
   // GET /products/:id --> {...}
   @Get(':id')
   getOneProduct(@Param('id') id: string) {
-    return this.productService.getProduct(+id);
+    try {
+      return this.productService.getProduct(+id);
+    } catch (err) {
+      throw new NotFoundException();
+    }
   }
   // POST /products
   @Post()
