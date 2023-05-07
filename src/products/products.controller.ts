@@ -8,8 +8,10 @@ import {
   Query,
   Body,
   NotFoundException,
+  UseGuards,
 } from '@nestjs/common';
 import { ParseIntPipe, ValidationPipe } from '@nestjs/common/pipes';
+import { AuthGuard } from 'src/auth/auth.guard';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './products.service';
@@ -33,6 +35,7 @@ export class ProductsController {
   }
   // POST /products
   @Post()
+  @UseGuards(AuthGuard)
   createProduct(
     @Body(new ValidationPipe()) createProductDto: CreateProductDto,
   ) {
