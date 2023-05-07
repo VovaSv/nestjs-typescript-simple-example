@@ -9,6 +9,7 @@ import {
   Body,
   NotFoundException,
 } from '@nestjs/common';
+import { ParseIntPipe, ValidationPipe } from '@nestjs/common/pipes';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductsService } from './products.service';
@@ -23,16 +24,18 @@ export class ProductsController {
   }
   // GET /products/:id --> {...}
   @Get(':id')
-  getOneProduct(@Param('id') id: string) {
+  getOneProduct(@Param('id', ParseIntPipe) id: number) {
     try {
-      return this.productService.getProduct(+id);
+      return this.productService.getProduct(id);
     } catch (err) {
       throw new NotFoundException();
     }
   }
   // POST /products
   @Post()
-  createProduct(@Body() createProductDto: CreateProductDto) {
+  createProduct(
+    @Body(new ValidationPipe()) createProductDto: CreateProductDto,
+  ) {
     return this.productService.createProduct(createProductDto);
   }
   // PUT /products/:id --> {...}
