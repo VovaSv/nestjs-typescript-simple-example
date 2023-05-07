@@ -10,25 +10,25 @@ import {
 } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { ProductsService } from './products.service';
 
 @Controller('products')
 export class ProductsController {
+  constructor(private readonly productService: ProductsService) {}
   // GET /products --> []
   @Get()
-  getProducts(@Query('type') type: string) {
-    return [{ type }];
+  getProducts(@Query('color') color: 'White' | 'Black') {
+    return this.productService.getProducts(color);
   }
   // GET /products/:id --> {...}
   @Get(':id')
   getOneProduct(@Param('id') id: string) {
-    return { id };
+    return this.productService.getProduct(+id);
   }
   // POST /products
   @Post()
   createProduct(@Body() createProductDto: CreateProductDto) {
-    return {
-      name: createProductDto.name,
-    };
+    return this.productService.createProduct(createProductDto);
   }
   // PUT /products/:id --> {...}
   @Put()
@@ -36,15 +36,11 @@ export class ProductsController {
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
   ) {
-    return {
-      id,
-    };
+    return this.productService.updateProduct(+id, updateProductDto);
   }
   // DELETE /products/:id
   @Delete(':id')
   removeProductProduct(@Param('id') id: string) {
-    return {
-      id,
-    };
+    return this.productService.removeProduct(+id);
   }
 }
